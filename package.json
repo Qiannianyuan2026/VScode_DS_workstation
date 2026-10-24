@@ -1,0 +1,348 @@
+{
+  "name": "deepseek-workbench",
+  "displayName": "DeepSeek 工作台",
+  "description": "在 VS Code 侧边栏与 DeepSeek 对话：选中代码即可定点实时修改、解释与提问，带内联 diff 预览和一键撤销。",
+  "version": "0.2.3",
+  "publisher": "local",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "AI",
+    "Chat",
+    "Programming Languages"
+  ],
+  "keywords": [
+    "deepseek",
+    "ai",
+    "chat",
+    "code edit",
+    "assistant"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "deepseekWorkbench",
+          "title": "DeepSeek 工作台",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "deepseekWorkbench": [
+        {
+          "type": "webview",
+          "id": "deepseek.workbench",
+          "name": "工作台",
+          "icon": "media/icon.svg",
+          "contextualTitle": "DeepSeek 工作台"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "deepseek.openWorkbench",
+        "title": "打开 DeepSeek 工作台",
+        "category": "DeepSeek",
+        "icon": "$(comment-discussion)"
+      },
+      {
+        "command": "deepseek.newChat",
+        "title": "新建对话",
+        "category": "DeepSeek",
+        "icon": "$(add)"
+      },
+      {
+        "command": "deepseek.askSelection",
+        "title": "询问选中代码",
+        "category": "DeepSeek",
+        "icon": "$(comment)"
+      },
+      {
+        "command": "deepseek.editSelection",
+        "title": "定点修改选中代码（实时预览）",
+        "category": "DeepSeek",
+        "icon": "$(edit)"
+      },
+      {
+        "command": "deepseek.explainSelection",
+        "title": "解释选中代码",
+        "category": "DeepSeek",
+        "icon": "$(book)"
+      },
+      {
+        "command": "deepseek.addComment",
+        "title": "为选中代码补注释",
+        "category": "DeepSeek",
+        "icon": "$(note)"
+      },
+      {
+        "command": "deepseek.generateTests",
+        "title": "为选中代码生成测试",
+        "category": "DeepSeek",
+        "icon": "$(beaker)"
+      },
+      {
+        "command": "deepseek.setApiKey",
+        "title": "设置 DeepSeek API Key",
+        "category": "DeepSeek",
+        "icon": "$(key)"
+      },
+      {
+        "command": "deepseek.clearApiKey",
+        "title": "清除 DeepSeek API Key",
+        "category": "DeepSeek"
+      },
+      {
+        "command": "deepseek.applyLastEdit",
+        "title": "应用上一次定点修改",
+        "category": "DeepSeek"
+      },
+      {
+        "command": "deepseek.revertLastEdit",
+        "title": "撤销上一次定点修改",
+        "category": "DeepSeek",
+        "icon": "$(discard)"
+      },
+      {
+        "command": "deepseek.clearHistory",
+        "title": "清空全部对话历史",
+        "category": "DeepSeek"
+      },
+      {
+        "command": "deepseek.openFile",
+        "title": "切换文件（不离开侧边栏）",
+        "category": "DeepSeek",
+        "icon": "$(folder-opened)"
+      },
+      {
+        "command": "deepseek.openSettings",
+        "title": "打开 DeepSeek 设置",
+        "category": "DeepSeek",
+        "icon": "$(gear)"
+      },
+      {
+        "command": "deepseek.checkSetup",
+        "title": "检查 API 配置与连通性",
+        "category": "DeepSeek",
+        "icon": "$(pulse)"
+      },
+      {
+        "command": "deepseek.refreshModels",
+        "title": "刷新可用模型列表",
+        "category": "DeepSeek",
+        "icon": "$(refresh)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "deepseek.newChat",
+          "when": "view == deepseek.workbench",
+          "group": "navigation@1"
+        },
+        {
+          "command": "deepseek.setApiKey",
+          "when": "view == deepseek.workbench",
+          "group": "navigation@2"
+        },
+        {
+          "command": "deepseek.openSettings",
+          "when": "view == deepseek.workbench",
+          "group": "1_settings@1"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "deepseek.editSelection",
+          "when": "editorHasSelection && editorTextFocus",
+          "group": "deepseek@1"
+        },
+        {
+          "command": "deepseek.askSelection",
+          "when": "editorHasSelection && editorTextFocus",
+          "group": "deepseek@2"
+        },
+        {
+          "command": "deepseek.explainSelection",
+          "when": "editorHasSelection && editorTextFocus",
+          "group": "deepseek@3"
+        },
+        {
+          "command": "deepseek.addComment",
+          "when": "editorHasSelection && editorTextFocus",
+          "group": "deepseek@4"
+        },
+        {
+          "command": "deepseek.generateTests",
+          "when": "editorHasSelection && editorTextFocus",
+          "group": "deepseek@5"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "deepseek.applyLastEdit"
+        },
+        {
+          "command": "deepseek.revertLastEdit"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "deepseek.editSelection",
+        "key": "ctrl+alt+e",
+        "mac": "cmd+alt+e",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "deepseek.askSelection",
+        "key": "ctrl+alt+a",
+        "mac": "cmd+alt+a",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "deepseek.openWorkbench",
+        "key": "ctrl+alt+d",
+        "mac": "cmd+alt+d"
+      },
+      {
+        "command": "deepseek.revertLastEdit",
+        "key": "ctrl+alt+z",
+        "mac": "cmd+alt+z",
+        "when": "editorTextFocus"
+      }
+    ],
+    "configuration": {
+      "title": "DeepSeek 工作台",
+      "properties": {
+        "deepseek.model": {
+          "type": "string",
+          "default": "deepseek-flash",
+          "markdownDescription": "默认模型。当前官方可用：`deepseek-flash`（V4.1 Flash，快且便宜）、`deepseek-v4-pro`（V4 Pro，更强）。侧边栏下拉会从 `/models` 自动拉取账号可用模型，这里也可手填网关模型 id。"
+        },
+        "deepseek.apiBaseUrl": {
+          "type": "string",
+          "default": "https://api.deepseek.com",
+          "description": "API 地址，不要在这里填 API Key（Key 用命令「DeepSeek: 设置 DeepSeek API Key」保存）。兼容 OpenAI 协议的服务可填自己的网关地址。"
+        },
+        "deepseek.temperature": {
+          "type": "number",
+          "default": 0.2,
+          "minimum": 0,
+          "maximum": 2,
+          "description": "改码与问答的采样温度。V4 思考模式下 API 会忽略此设置。"
+        },
+        "deepseek.maxTokens": {
+          "type": "number",
+          "default": 8192,
+          "minimum": 128,
+          "maximum": 393216,
+          "description": "单次回复的最大 token 数。V4 系列最大可到 384K。"
+        },
+        "deepseek.thinking": {
+          "type": "boolean",
+          "default": true,
+          "description": "V4 / Flash 模型默认是否开启思考模式；侧边栏输入框旁可以随时切换。"
+        },
+        "deepseek.reasoningEffort": {
+          "type": "string",
+          "enum": [
+            "low",
+            "high",
+            "max"
+          ],
+          "default": "high",
+          "description": "V4 思考强度：low 更快，max 更深。仅思考模式开启时生效。"
+        },
+        "deepseek.extraModels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "手动补充模型 id（例如自建网关的模型名），会出现在侧边栏下拉框里。"
+        },
+        "deepseek.contextLines": {
+          "type": "number",
+          "default": 30,
+          "minimum": 0,
+          "maximum": 500,
+          "description": "附带选区前后各多少行作为上下文。"
+        },
+        "deepseek.maxFileChars": {
+          "type": "number",
+          "default": 60000,
+          "description": "附带整份文件时的最大字符数，超过会从中间截断。"
+        },
+        "deepseek.maxHistoryTurns": {
+          "type": "number",
+          "default": 8,
+          "minimum": 0,
+          "maximum": 50,
+          "description": "请求中携带的历史对话轮数（越大越贵）。"
+        },
+        "deepseek.requestTimeoutMs": {
+          "type": "number",
+          "default": 120000,
+          "description": "单次请求超时时间（毫秒）。"
+        },
+        "deepseek.confirmBeforeApply": {
+          "type": "boolean",
+          "default": true,
+          "description": "定点修改生成后先弹出 diff 预览并要求确认，再写入文件。"
+        },
+        "deepseek.extraSystemPrompt": {
+          "type": "string",
+          "default": "",
+          "description": "追加到系统提示词末尾的自定义要求，例如团队代码规范。"
+        },
+        "deepseek.keepFocusAfterFileSwitch": {
+          "type": "boolean",
+          "default": true,
+          "description": "从侧边栏切换文件后，焦点是否留在侧边栏（方便继续提问）；关闭则把焦点交给编辑器，方便立刻选中代码做定点修改。"
+        },
+        "deepseek.currency": {
+          "type": "string",
+          "enum": [
+            "CNY",
+            "USD"
+          ],
+          "enumDescriptions": [
+            "人民币，按下方汇率从官方美元价换算",
+            "美元，官方价格原币种"
+          ],
+          "default": "CNY",
+          "description": "花费显示使用的货币。"
+        },
+        "deepseek.usdToCny": {
+          "type": "number",
+          "default": 7.2,
+          "minimum": 1,
+          "maximum": 20,
+          "description": "美元兑人民币汇率，用于把官方美元价换算成人民币展示；只影响显示，不影响实际计费。"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run build",
+    "build": "tsc -p tsconfig.json",
+    "watch": "tsc -p tsconfig.json --watch",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "npm run build && node test/core.test.js && node test/client.test.js && node test/models.test.js && node test/pricing.test.js && node test/integration.test.js && node test/webview.test.js",
+    "package": "node scripts/package-vsix.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "20.14.0",
+    "@types/vscode": "1.90.0",
+    "jsdom": "^30.1.3",
+    "typescript": "5.5.4"
+  }
+}

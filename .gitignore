@@ -1,0 +1,7 @@
+node_modules/
+dist/
+*.vsix
+.vscode-test/
+.pnpm-store/
+.smoke/
+*.log
